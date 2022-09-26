@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -172,6 +173,12 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun routeToWeatherScreen(lat:Double, lon:Double) {
-        navController.navigate(route = Screen.WeatherScreen.route.plus("?lat=$lat&lon=$lon"))
+        navigateAndReplaceStartRoute(Screen.WeatherScreen.route.plus("?lat=$lat&lon=$lon"))
+    }
+
+    private fun navigateAndReplaceStartRoute(newHomeRoute: String) {
+        navController.popBackStack(navController.graph.startDestinationId, true)
+        navController.graph.setStartDestination(newHomeRoute)
+        navController.navigate(newHomeRoute)
     }
 }
