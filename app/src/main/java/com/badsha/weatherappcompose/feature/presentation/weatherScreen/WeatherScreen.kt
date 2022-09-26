@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun WeatherScreen(
     navController: NavController,
-    lat:Double, lon:Double,
     viewModel: WeatherViewModel = hiltViewModel(),
 ) {
     val state = viewModel.state.value

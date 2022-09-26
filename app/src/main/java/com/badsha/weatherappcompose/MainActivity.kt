@@ -82,12 +82,8 @@ class MainActivity : ComponentActivity() {
                                     type = NavType.FloatType
                                 },
                             )
-                        ) { backStackEntry ->
-                            val lat = backStackEntry.arguments?.getFloat("lat") ?: 0.0
-                            val lon = backStackEntry.arguments?.getFloat("lon") ?: 0.0
-                            WeatherScreen(navController = navController,lat = lat.toDouble(),lon = lon.toDouble()).apply {
-
-                            }
+                        ) {
+                            WeatherScreen(navController = navController)
                         }
 //                        composable(route = Screen.WeatherScreen.route) {
 //                            WeatherScreen(navController = navController, )
