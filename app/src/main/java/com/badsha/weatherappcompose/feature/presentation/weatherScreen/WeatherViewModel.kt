@@ -5,7 +5,6 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.badsha.weatherappcompose.feature.data.Resource
@@ -21,7 +20,6 @@ import javax.inject.Inject
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
     private val weatherUseCase: WeatherInteractor,
-    savedStateHandle: SavedStateHandle,
 ) : ViewModel(){
     private val _state = mutableStateOf(WeatherState())
     val state: State<WeatherState> = _state
@@ -33,33 +31,41 @@ class WeatherViewModel @Inject constructor(
     var bottomSheetState : ModalBottomSheetState? = null
     var bottomSheetScope : CoroutineScope? = null
 
-    private var lat: Double? = checkNotNull(savedStateHandle.get<Float>("lat")).toDouble()
-    private var lon: Double? = checkNotNull(savedStateHandle.get<Float>("lon")).toDouble()
+    private var lat: Double? = null
+    private var lon: Double? = null
 
-    init {
-        viewModelScope.launch {
-            getWeatherData(lat, lon)
-        }
+    fun setLocationInfo(lat:Double?, lon:Double?){
+        this.lat = lat
+        this.lon = lon
     }
 
     /// Collect weather data
-    private suspend fun getWeatherData(lat:Double?, lon:Double?){
-        weatherUseCase.getWeatherData(lat ?: 0.0, lon?:0.0).collect {resource ->
-            when(resource){
-                is Resource.Success -> {
-                    resource.data?.let { weatherData.value = it }
-                    _state.value = _state.value.copy(
+    fun getWeatherData(){
+        if(state.value.isDataLoaded) return
+
+        viewModelScope.launch {
+            weatherUseCase.getWeatherData(lat ?: 0.0, lon?:0.0).collect {resource ->
+                when(resource){
+                    is Resource.Success -> {
+                        resource.data?.let { weatherData.value = it }
+                        _state.value = _state.value.copy(
+                            isLoading = false,
+                            isDataLoaded = true,
+                            isFailed = false,
+                        )
+                    }
+                    is Resource.Error -> _state.value = _state.value.copy(
                         isLoading = false,
+                        isFailed = true,
+                        isDataLoaded = false,
+                        errorMessage = resource.message ?: ""
                     )
+                    is Resource.Loading ->_state.value = _state.value.copy(
+                        isLoading = true,
+                        isDataLoaded = false,
+                        isFailed = false,
+                        )
                 }
-                is Resource.Error -> _state.value = _state.value.copy(
-                    isLoading = false,
-                    isFailed = true,
-                    errorMessage = resource.message ?: ""
-                )
-                is Resource.Loading ->_state.value = _state.value.copy(
-                    isLoading = true,
-                )
             }
         }
     }

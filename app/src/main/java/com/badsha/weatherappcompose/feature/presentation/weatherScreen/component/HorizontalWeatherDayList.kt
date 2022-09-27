@@ -1,8 +1,7 @@
 package com.badsha.weatherappcompose.feature.presentation.weatherScreen.component
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -19,12 +18,11 @@ fun HorizontalWeatherDayList(daysData: List<WeatherDayDTO>, onItemClick:(dayData
     var chunk:List<List<WeatherDayDTO>> = listOf()
     chunk = daysData.chunked(5)
     HorizontalPager(count = chunk.size, contentPadding = PaddingValues(8.dp)) { rowId ->
-        LazyColumn(state = rememberLazyListState()){
-            items(chunk[rowId].size){colId->
-                WeatherCardSmall(dayData = chunk[rowId][colId], onClick = {
+        Column(){
+            chunk[rowId].map {dayData ->
+                WeatherCardSmall(dayData = dayData, onClick = {
                     onItemClick(it)
-                    },
-                )
+                })
             }
         }
     }

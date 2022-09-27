@@ -16,7 +16,6 @@ import androidx.compose.material.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -87,8 +86,10 @@ class MainActivity : ComponentActivity() {
                                     type = NavType.FloatType
                                 },
                             )
-                        ) {
-                            WeatherScreen(navController = navController)
+                        ) {backStackEntry->
+                            val lat = (backStackEntry.arguments?.getFloat("lat") ?: 0.0).toDouble()
+                            val lon = (backStackEntry.arguments?.getFloat("lon") ?: 0.0).toDouble()
+                            WeatherScreen(navController = navController, lat = lat, lon = lon)
                         }
                     }
                 }

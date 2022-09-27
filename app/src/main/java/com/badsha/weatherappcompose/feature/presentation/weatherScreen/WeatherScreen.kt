@@ -3,6 +3,7 @@ package com.badsha.weatherappcompose.feature.presentation.weatherScreen
 import SimpleBottomSheetWrapper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,9 +20,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun WeatherScreen(
     navController: NavController,
+    lat:Double, lon:Double,
     viewModel: WeatherViewModel = hiltViewModel(),
 ) {
     val state = viewModel.state.value
+    viewModel.setLocationInfo(lat,lon)
+    viewModel.getWeatherData()
+
     Scaffold {
         Box(
             modifier = Modifier
@@ -62,23 +67,25 @@ fun WeatherScreen(
                 val allDayData = viewModel.weatherData.value.data
                 SimpleBottomSheetWrapper(
                     content = {
-                        Column(modifier = Modifier.fillMaxWidth()) {
-                            WeatherCardLarge(city, todayData)
-                            HorizontalWeatherDayList(allDayData.subList(1, 16), onItemClick = {
-                                viewModel.selectedDay.value = it
-                                viewModel.bottomSheetScope?.launch {
-                                    if (viewModel.bottomSheetState?.isVisible == true) {
-                                        viewModel.bottomSheetState?.hide()
-                                        viewModel.bottomSheetState?.hide()
-                                    } else {
-                                        viewModel.bottomSheetState?.show()
+                        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                            item{
+                                WeatherCardLarge(city, todayData)
+                            }
+                            item{
+                                HorizontalWeatherDayList(allDayData.subList(1, 16), onItemClick = {
+                                    viewModel.selectedDay.value = it
+                                    viewModel.bottomSheetScope?.launch {
+                                        if (viewModel.bottomSheetState?.isVisible == true) {
+                                            viewModel.bottomSheetState?.hide()
+                                            viewModel.bottomSheetState?.hide()
+                                        } else {
+                                            viewModel.bottomSheetState?.show()
+                                        }
                                     }
-                                }
-                            })
+                                })
+                            }
                         }
-                    },
-                    viewModel,
-                ) {
+                    },viewModel){
                     WeatherCardLarge(city = city, dayData = viewModel.selectedDay.value ?: todayData)
                 }
             }
