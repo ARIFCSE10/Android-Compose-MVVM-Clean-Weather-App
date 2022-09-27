@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.badsha.weatherappcompose.feature.data.remote.dto.WeatherDayDTO
 import com.badsha.weatherappcompose.feature.util.DrawableUtil
@@ -34,8 +35,8 @@ fun WeatherCardLarge(city:String, dayData:WeatherDayDTO, modifier: Modifier = Mo
                 Text("${dayData.temp}°C", style = MaterialTheme.typography.h5)
             }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(dayData.datetime?.toString() ?: "--"  , style = MaterialTheme.typography.h6, color = MaterialTheme.colors.secondary)
-                Text(dayData.weather?.description ?: "--", style = MaterialTheme.typography.h6, color = MaterialTheme.colors.secondary)
+                Text(dayData.datetime?.toString() ?: "--"  ,textAlign = TextAlign.Start, style = MaterialTheme.typography.h6, color = MaterialTheme.colors.secondary, modifier = Modifier.weight(1f))
+                Text(dayData.weather?.description ?: "--", textAlign = TextAlign.End,  style = MaterialTheme.typography.h6, color = MaterialTheme.colors.secondary, modifier = Modifier.weight(1f))
             }
 
             Row(modifier = Modifier
