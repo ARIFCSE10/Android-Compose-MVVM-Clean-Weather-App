@@ -63,10 +63,6 @@ fun WeatherScreen(
                 SimpleBottomSheetWrapper(
                     content = {
                         Column(modifier = Modifier.fillMaxWidth()) {
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text("lat :${viewModel.weatherData.value.lat}", style = MaterialTheme.typography.h6, color = MaterialTheme.colors.primaryVariant)
-                                Text("lon:${viewModel.weatherData.value.lon}", style = MaterialTheme.typography.h6, color = MaterialTheme.colors.primaryVariant)
-                            }
                             WeatherCardLarge(city, todayData)
                             HorizontalWeatherDayList(allDayData.subList(1, 16), onItemClick = {
                                 viewModel.selectedDay.value = it
