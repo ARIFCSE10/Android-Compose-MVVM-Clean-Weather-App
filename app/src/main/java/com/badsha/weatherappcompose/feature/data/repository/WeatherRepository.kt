@@ -5,7 +5,9 @@ import com.badsha.weatherappcompose.feature.data.remote.ApiResponse
 import com.badsha.weatherappcompose.feature.data.remote.RemoteDataSource
 import com.badsha.weatherappcompose.feature.data.remote.dto.WeatherResponse
 import com.badsha.weatherappcompose.feature.domain.repository.IWeatherRepository
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import javax.inject.Singleton
 

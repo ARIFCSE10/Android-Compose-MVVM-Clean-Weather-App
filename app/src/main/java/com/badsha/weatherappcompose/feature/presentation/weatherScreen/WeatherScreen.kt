@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.badsha.weatherappcompose.feature.presentation.weatherScreen.component.HorizontalWeatherDayList
@@ -28,15 +29,22 @@ fun WeatherScreen(
                 .background(MaterialTheme.colors.background)
             ,
         ) {
-            if (state.isLoading) {
-                Row(
+            if (state.isLoading) { // Loading Case
+                Column(
                     modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     CircularProgressIndicator()
+                    Spacer(modifier = Modifier.padding(16.dp))
+                    Text(
+                        text = "Collecting Weather Info",
+                        style = MaterialTheme.typography.h5,
+                        color = MaterialTheme.colors.primary
+                    )
                 }
-            } else if (state.isFailed) {
+
+            } else if (state.isFailed) {  // Error Case
                 Row(
                     modifier = Modifier.fillMaxSize(),
                     horizontalArrangement = Arrangement.Center,
@@ -48,13 +56,17 @@ fun WeatherScreen(
                         style = MaterialTheme.typography.h5
                     )
                 }
-            } else {
+            } else {  // Success Case
                 val todayData = viewModel.weatherData.value.data.first()
                 val city = viewModel.weatherData.value.cityName ?: "--"
                 val allDayData = viewModel.weatherData.value.data
                 SimpleBottomSheetWrapper(
                     content = {
                         Column(modifier = Modifier.fillMaxWidth()) {
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                Text("lat :${viewModel.weatherData.value.lat}", style = MaterialTheme.typography.h6, color = MaterialTheme.colors.primaryVariant)
+                                Text("lon:${viewModel.weatherData.value.lon}", style = MaterialTheme.typography.h6, color = MaterialTheme.colors.primaryVariant)
+                            }
                             WeatherCardLarge(city, todayData)
                             HorizontalWeatherDayList(allDayData.subList(1, 16), onItemClick = {
                                 viewModel.selectedDay.value = it
@@ -80,8 +92,22 @@ fun WeatherScreen(
 }
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun ComposablePreview() {
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            CircularProgressIndicator()
+            Spacer(modifier = Modifier.padding(16.dp))
+            Text(
+                text = "Collecting Location Info",
+                style = MaterialTheme.typography.h5,
+                color = MaterialTheme.colors.primary
+            )
+        }
 
 }

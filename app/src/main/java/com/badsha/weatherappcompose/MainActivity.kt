@@ -10,18 +10,14 @@ import android.os.Looper
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -57,17 +53,25 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable(route = Screen.LocationScreen.route){
                             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                Row(
-                                    modifier = Modifier.fillMaxSize(),
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Row(
+                                Column(
                                         modifier = Modifier.fillMaxSize(),
-                                        horizontalArrangement = Arrangement.Center,
-                                        verticalAlignment = Alignment.CenterVertically
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally,
                                     ) {
                                         CircularProgressIndicator()
+                                        Spacer(modifier = Modifier.padding(16.dp))
+                                        Text(
+                                            text = "Collecting Location Info",
+                                            style = MaterialTheme.typography.h5,
+                                            color = MaterialTheme.colors.primary
+                                        )
+                                    Spacer(modifier = Modifier.padding(16.dp))
+                                    Button(onClick = { getLocation()}) {
+                                        Text(
+                                            text = "Retry",
+                                            style = MaterialTheme.typography.h5,
+                                            color = MaterialTheme.colors.background
+                                        )
                                     }
                                 }
                             }
@@ -85,9 +89,6 @@ class MainActivity : ComponentActivity() {
                         ) {
                             WeatherScreen(navController = navController)
                         }
-//                        composable(route = Screen.WeatherScreen.route) {
-//                            WeatherScreen(navController = navController, )
-//                        }
                     }
                 }
             }
@@ -96,6 +97,7 @@ class MainActivity : ComponentActivity() {
 
     }
 
+    /// Check for location permission
     private fun getLocation(){
         isLocationPermissionGranted()
         mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -120,10 +122,8 @@ class MainActivity : ComponentActivity() {
 
 
     private fun isLocationPermissionGranted(): Boolean {
-        return if (ActivityCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+        return if (
+            ActivityCompat.checkSelfPermission(
                 this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
@@ -132,7 +132,6 @@ class MainActivity : ComponentActivity() {
                 this,
                 arrayOf(
                     android.Manifest.permission.ACCESS_FINE_LOCATION,
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION
                 ),
                 0
             )
@@ -142,6 +141,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /// Collect lat lon from System
     private fun getCurrentLocation() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         val request = LocationRequest.create().apply {
@@ -150,28 +150,32 @@ class MainActivity : ComponentActivity() {
             priority = Priority.PRIORITY_HIGH_ACCURACY
             maxWaitTime = 10000
         }
-        val permission = ContextCompat.checkSelfPermission(
+        val finePermission = ContextCompat.checkSelfPermission(
             this, Manifest.permission.ACCESS_FINE_LOCATION
         )
-        if (permission == PackageManager.PERMISSION_GRANTED) {
+
+        if (finePermission == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.requestLocationUpdates(request, object : LocationCallback() {
                 override fun onLocationResult(locationResult: LocationResult) {
+                    super.onLocationResult(locationResult)
                     val location: Location? = locationResult.lastLocation
                     if (location != null) {
                         mLat = location.latitude
                         mLon = location.longitude
-                        fusedLocationClient.removeLocationUpdates(this)
                         routeToWeatherScreen(mLat, mLon)
+                        fusedLocationClient.removeLocationUpdates(this)
                     }
                 }
             }, Looper.getMainLooper())
         }
     }
 
+    /// Route to weather screen after getting lan, lon
     private fun routeToWeatherScreen(lat:Double, lon:Double) {
         navigateAndReplaceStartRoute(Screen.WeatherScreen.route.plus("?lat=$lat&lon=$lon"))
     }
 
+    /// Replacement Route
     private fun navigateAndReplaceStartRoute(newHomeRoute: String) {
         navController.popBackStack(navController.graph.startDestinationId, true)
         navController.graph.setStartDestination(newHomeRoute)

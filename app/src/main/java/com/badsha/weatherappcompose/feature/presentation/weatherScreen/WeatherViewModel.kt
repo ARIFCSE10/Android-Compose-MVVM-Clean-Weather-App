@@ -8,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.navArgument
 import com.badsha.weatherappcompose.feature.data.Resource
 import com.badsha.weatherappcompose.feature.data.remote.dto.WeatherDayDTO
 import com.badsha.weatherappcompose.feature.data.remote.dto.WeatherResponse
@@ -17,7 +16,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 
 @HiltViewModel
@@ -36,7 +34,7 @@ class WeatherViewModel @Inject constructor(
     var bottomSheetScope : CoroutineScope? = null
 
     private var lat: Double? = checkNotNull(savedStateHandle.get<Float>("lat")).toDouble()
-    private var lon: Double? = checkNotNull(savedStateHandle.get<Float>("lat")).toDouble()
+    private var lon: Double? = checkNotNull(savedStateHandle.get<Float>("lon")).toDouble()
 
     init {
         viewModelScope.launch {
@@ -44,6 +42,7 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
+    /// Collect weather data
     private suspend fun getWeatherData(lat:Double?, lon:Double?){
         weatherUseCase.getWeatherData(lat ?: 0.0, lon?:0.0).collect {resource ->
             when(resource){

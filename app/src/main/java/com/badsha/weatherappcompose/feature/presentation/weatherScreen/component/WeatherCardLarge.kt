@@ -30,12 +30,12 @@ fun WeatherCardLarge(city:String, dayData:WeatherDayDTO, modifier: Modifier = Mo
             .padding(8.dp),
         ) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(city, style = MaterialTheme.typography.h4)
-                Text("${dayData.temp}°C", style = MaterialTheme.typography.h4)
+                Text(city, style = MaterialTheme.typography.h5)
+                Text("${dayData.temp}°C", style = MaterialTheme.typography.h5)
             }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(dayData.datetime?.toString() ?: "--"  , style = MaterialTheme.typography.h5, color = MaterialTheme.colors.secondary)
-                Text(dayData.weather?.description ?: "--", style = MaterialTheme.typography.h5, color = MaterialTheme.colors.secondary)
+                Text(dayData.datetime?.toString() ?: "--"  , style = MaterialTheme.typography.h6, color = MaterialTheme.colors.secondary)
+                Text(dayData.weather?.description ?: "--", style = MaterialTheme.typography.h6, color = MaterialTheme.colors.secondary)
             }
 
             Row(modifier = Modifier
@@ -51,8 +51,8 @@ fun WeatherCardLarge(city:String, dayData:WeatherDayDTO, modifier: Modifier = Mo
             }
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("min:${dayData.minTemp}°C", style = MaterialTheme.typography.h6, color = MaterialTheme.colors.primaryVariant)
-                Text("max:${dayData.maxTemp}°C", style = MaterialTheme.typography.h6, color = MaterialTheme.colors.primaryVariant)
+                Text("min:${dayData.minTemp}°C", style = MaterialTheme.typography.body1, color = MaterialTheme.colors.primaryVariant)
+                Text("max:${dayData.maxTemp}°C", style = MaterialTheme.typography.body1, color = MaterialTheme.colors.primaryVariant)
             }
         }
     }

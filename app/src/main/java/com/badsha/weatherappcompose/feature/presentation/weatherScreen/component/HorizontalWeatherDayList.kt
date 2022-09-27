@@ -23,7 +23,7 @@ fun HorizontalWeatherDayList(daysData: List<WeatherDayDTO>, onItemClick:(dayData
             items(chunk[rowId].size){colId->
                 WeatherCardSmall(dayData = chunk[rowId][colId], onClick = {
                     onItemClick(it)
-                },
+                    },
                 )
             }
         }

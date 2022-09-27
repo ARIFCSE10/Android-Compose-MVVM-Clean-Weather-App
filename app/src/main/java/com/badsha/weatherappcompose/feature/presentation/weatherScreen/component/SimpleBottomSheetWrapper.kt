@@ -35,20 +35,3 @@ fun SimpleBottomSheetWrapper(content:@Composable () -> Unit,
         content()
     }
 }
-
-@Composable
-fun BottomSheet() {
-    Column(
-        modifier = Modifier.padding(32.dp)
-    ) {
-        Text(
-            text = "Bottom sheet",
-            style = MaterialTheme.typography.h6
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        Text(
-            text = "Click outside the bottom sheet to hide it",
-            style = MaterialTheme.typography.body1
-        )
-    }
-}

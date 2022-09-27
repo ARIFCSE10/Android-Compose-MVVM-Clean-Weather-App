@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.badsha.weatherappcompose.feature.data.remote.dto.WeatherDayDTO
 import com.badsha.weatherappcompose.feature.util.DrawableUtil
@@ -30,8 +31,8 @@ fun WeatherCardSmall(dayData:WeatherDayDTO, onClick:(dayData:WeatherDayDTO)->Uni
         },
         elevation = 2.dp, shape = RoundedCornerShape(8.dp), backgroundColor = MaterialTheme.colors.background) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.padding(8.dp)){
-            Column(verticalArrangement = Arrangement.Center) {
-                Text(dayData.datetime.toString(), style = MaterialTheme.typography.body1, color = MaterialTheme.colors.primary)
+            Column(verticalArrangement = Arrangement.Center, modifier = Modifier.weight(1f)) {
+                Text(dayData.datetime.toString(), style = MaterialTheme.typography.body1, fontWeight = FontWeight.Bold, color = MaterialTheme.colors.onSecondary)
                 Text(dayData.weather?.description ?: "--", style = MaterialTheme.typography.body1, color = MaterialTheme.colors.primary)
             }
             Spacer(modifier = Modifier.width(16.dp))
@@ -45,7 +46,7 @@ fun WeatherCardSmall(dayData:WeatherDayDTO, onClick:(dayData:WeatherDayDTO)->Uni
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
-            Column(horizontalAlignment = Alignment.End) {
+            Column(horizontalAlignment = Alignment.End, modifier = Modifier.weight(1f)) {
                 Text("Current : ${dayData.temp}°C", style = MaterialTheme.typography.body2, color = MaterialTheme.colors.onBackground)
                 Text("Max : ${dayData.maxTemp}°C", style = MaterialTheme.typography.body2, color = MaterialTheme.colors.onBackground)
                 Text("Min : ${dayData.minTemp}°C", style = MaterialTheme.typography.body2, color = MaterialTheme.colors.onBackground)

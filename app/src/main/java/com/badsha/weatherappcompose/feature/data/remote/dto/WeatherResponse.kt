@@ -1,6 +1,5 @@
 package com.badsha.weatherappcompose.feature.data.remote.dto
 
-import com.badsha.weatherappcompose.feature.data.remote.dto.WeatherDayDTO
 import com.google.gson.annotations.SerializedName
 
 
