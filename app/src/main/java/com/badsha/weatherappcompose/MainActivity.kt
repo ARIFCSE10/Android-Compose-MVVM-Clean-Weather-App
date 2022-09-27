@@ -10,6 +10,7 @@ import android.os.Looper
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.ui.Alignment
@@ -93,52 +94,34 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
+            mGPS = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+            if (mGPS) {
+                getCurrentLocation()
+            } else {
+                Toast.makeText(this, "Please Turn On the GPS", Toast.LENGTH_LONG).show()
+            }
+        } else {
+            Toast.makeText(this, "Please provide precise location", Toast.LENGTH_LONG).show()
+            getLocation()
+        }
     }
 
     /// Check for location permission
     private fun getLocation(){
-        isLocationPermissionGranted()
-        mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
-        mGPS = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        if (mGPS) {
-            getCurrentLocation()
-        } else {
-            Toast.makeText(this, "Please Turn On the GPS", Toast.LENGTH_LONG).show()
-        }
+        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
     override fun onRestart() {
         super.onRestart()
-        mGPS = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        if (mGPS) {
-            getCurrentLocation()
-        } else {
-            Toast.makeText(this, "Please Turn On the GPS", Toast.LENGTH_LONG).show()
-        }
-    }
-
-
-    private fun isLocationPermissionGranted(): Boolean {
-        return if (
-            ActivityCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    android.Manifest.permission.ACCESS_FINE_LOCATION,
-                ),
-                0
-            )
-            false
-        } else {
-            true
-        }
+        getLocation()
     }
 
     /// Collect lat lon from System
